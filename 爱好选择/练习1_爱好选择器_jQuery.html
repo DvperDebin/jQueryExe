@@ -1,0 +1,80 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <title>全选练习</title>
+</head>
+<body>
+
+<form>
+  你爱好的运动是？<input type="checkbox" id="checkedAllBox"/>全选/全不选
+
+  <br/>
+  <input type="checkbox" name="items" value="足球"/>足球
+  <input type="checkbox" name="items" value="篮球"/>篮球
+  <input type="checkbox" name="items" value="羽毛球"/>羽毛球
+  <input type="checkbox" name="items" value="乒乓球"/>乒乓球
+  <br/>
+  <input type="button" id="checkedAllBtn" value="全　选"/>
+  <input type="button" id="checkedNoBtn" value="全不选"/>
+  <input type="button" id="checkedRevBtn" value="反　选"/>
+  <input type="button" id="sendBtn" value="提　交"/>
+</form>
+
+<script src="jquery-1.10.1.js"></script>
+<script type="text/javascript">
+  /*
+   功能说明:
+   1. 点击'全选': 选中所有爱好
+   2. 点击'全不选': 所有爱好都不勾选
+   3. 点击'反选': 改变所有爱好的勾选状态
+   4. 点击'全选/全不选': 选中所有爱好, 或者全不选中
+   5. 点击某个爱好时, 必要时更新'全选/全不选'的选中状态
+   6. 点击'提交': 提示所有勾选的爱好
+   */
+$(function () {
+    // 获取所有的items和全选，全不选
+    var $items = $(':input:checkbox').filter('[name=items]');
+    var $selectORno = $('#checkedAllBox');
+    //绑定事件,点击全选就全选，注意更新全选/全不选
+    $('#checkedAllBtn').click(function () {
+        $items.prop('checked',true);
+        $selectORno.prop('checked',true);
+    })
+    //绑定事件,点击全不选就全不选，注意更新全选/全不选
+    $('#checkedNoBtn').click(function () {
+        $items.prop('checked',false);
+        $selectORno.prop('checked',false);
+    })
+    // 点击反选，被选中的就不被选择，没被选择就被选择
+    $('#checkedRevBtn').click(function () {
+        // 遍历所有的items
+        $items.each(function () {
+            // 所有的items反选设置
+            this.checked = !this.checked;
+        })                              // 如果items中被选择的个数有4个，就返回true
+        $selectORno.prop('checked', $items.filter(':checked').length === 4);
+    })
+    // 点击'全选/全不选': 选中所有爱好, 或者全不选中
+    $selectORno.click(function () {
+        $items.prop('checked', this.checked);  // 这就是利用prop()的第二个参数，this.checked就是绑定事件的元素是否被选中
+    })
+
+    //点击某个爱好时, 必要时更新'全选/全不选'的选中状态
+    $items.click(function () {          // 还是判断被选中的个数是否为4
+        $selectORno.prop('checked', $items.filter(':checked').length === 4);
+    })
+
+    //点击'提交': 提示所有勾选的爱好
+    $('#sendBtn').click(function () {
+        $items.filter(':checked').each(function () {
+            alert(this.value);   // 因为遍历，现在变成了一个DOM对象了，所以要用value而不是val()
+        })
+    })
+})
+
+
+</script>
+</body>
+
+</html>

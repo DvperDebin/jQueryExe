@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="UTF-8">
+  <title>03_回到顶部</title>
+  <style>
+    #to_top {
+      width: 30px;
+      height: 40px;
+      font: 14px/20px arial;
+      text-align: center;
+      background: #06c;
+      position: fixed;
+      cursor: pointer;
+      color: #fff;
+      left: 1420px;
+      top: 500px;
+    }
+  </style>
+</head>
+<body style="height: 5000px;">
+
+<div id="to_top">返回顶部</div>
+
+<script src="jquery-1.10.1.js"></script>
+<script>
+// 点击回到顶部
+  $(function () {
+      $('#to_top').click(function () {
+          // 取到html和body解决兼容性问题
+          var $page = $('body,html');
+          // 要得到总共长度
+          var $totalDis = $('body').scrollTop() + $('html').scrollTop(); // 依旧要解决兼容问题
+          //设定总时长
+          var $time = 400;
+          // 设置走一帧的时间
+          var $timePerFrame = 20;
+          //设置一共走多少帧
+          var $frameNum = $time/$timePerFrame;
+          // 求出一帧走的距离
+          var $disPerFrame = $totalDis/$frameNum;
+          //设置定时器
+          var $intervalID = setInterval(function () {
+              // 剩下的距离就是走了一帧之后的距离
+              $totalDis = $totalDis - $disPerFrame;
+              if( $totalDis <= 0){
+                  clearInterval($intervalID);
+              }
+              // 整个页面的距离就是走了一帧之后剩下的距离
+              $page.scrollTop($totalDis)
+          },$timePerFrame)   // 每20ms更新一次
+
+      })
+  })
+</script>
+</body>
+
+</html>

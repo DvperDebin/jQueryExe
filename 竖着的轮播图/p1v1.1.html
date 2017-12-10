@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>first exercise</title>
+    <script type="text/javascript" src="js/jquery-1.10.1.js"></script>
+    <style>
+        *{
+            margin:0px;
+            padding: 0px;
+        }
+        imgStored{
+            height: 4320px;
+        }
+        img{
+            width: 100%;
+            height: 1080px;
+            margin-bottom:-4px;
+
+        }
+        #dot{
+            width: 40px;
+            height: 150px;
+            position: fixed;
+            left: 1%;
+            top: 50%;
+            transform: translateY(-50%);
+            overflow: hidden;
+        }
+        .sdot{
+            width: 30px;
+            height: 30px;
+            border: 1px solid #0287CA;
+            border-radius: 50%;
+            margin-bottom: 5px;
+            cursor: pointer;
+        }
+        .container{
+            position: relative;
+
+        }
+        #on{
+            background: orange;
+            opacity: 0.3;
+        }
+        #top{
+            position: fixed;
+            left: 1%;
+            top: 60%;
+            transform: translateY(-50%);
+            width: 30px;
+            height: 30px;
+            border: 1px solid #0287CA;
+            font-size:12px;
+            cursor:pointer;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="imgStored">
+        <img src="img/1.jpg">
+        <img src="img/2.jpg">
+        <img src="img/3.jpg">
+        <img src="img/4.jpg">
+    </div>
+    <div id="dot">
+        <div class="sdot" id="on"></div>
+        <div class="sdot"></div>
+        <div class="sdot"></div>
+        <div class="sdot"></div>
+    </div>
+    <div id="top">
+        <p>回到顶部</p>
+    </div>
+
+
+</div>
+
+<script type="text/javascript">
+    $(function () {
+
+            // 此处bug依旧没有解决
+            var $dot = $('#dot > div');
+            var preindex = 0;
+            var flag = false;
+            $dot.on('click',function () {
+                if(flag){   // 如果触发二次点击，就不执行
+                    return;
+                }
+
+                var index = $(this).index();
+                //计算差值这一次点击和上一次点击的差值
+                var sub = index - preindex;
+                $dot[preindex].removeAttribute('id');
+                $dot[index].setAttribute('id','on');
+                preindex = index;
+                var $page = $('body,html');
+                // 移动一张图片的距离
+                var offset = 1080;
+                var time = 400;
+                var tpf = 20;
+                var nof = time/tpf;
+                var dpf = offset/nof;
+                var curPos = $('body').scrollTop() + $('html').scrollTop();
+                if(curPos === 0 || curPos === 1080 || curPos === 2160 || curPos === 3240 ){
+                    flag = true;
+                    var tId1 = setInterval(function () {
+                        if(sub > 0){
+                            curPos = curPos + dpf;
+                            if(curPos === offset * index){
+                                clearInterval(tId1);
+                                flag = false;  //关闭开关
+                            }
+                        }else if(sub < 0){
+                            curPos = curPos - dpf;
+                            if(curPos === offset * index){
+                                    clearInterval(tId1);
+                                flag = false;  //关闭开关
+                                }
+                            }
+
+                        $page.scrollTop(curPos);
+
+                    },tpf)
+                }else{
+                    var rd = curPos%1080;  // 余数 比如现在在1900的位置上，余数是100
+                    // 应该继续走的距离 , 比如现在在200，一共走1070 * 2，到第三种图 还要走3040
+                    var wdis = offset * index - curPos;
+                    var tId2 = setInterval(function () {
+                        if(sub > 0){
+                            curPos = curPos + 10;
+                            if((curPos-rd) === wdis){
+                                clearInterval(tId2);
+                                flag = false;  //关闭开关
+                            }
+                        }else if(sub < 0){
+                            curPos = curPos - 5;
+                            if((curPos-rd) === wdis){
+                                clearInterval(tId2);
+                                flag = false;  //关闭开关
+                            }
+                        }
+                        $page.scrollTop(curPos);
+                    },1)
+                }
+            })
+
+            // 滚动显示相对应的图片
+            $(window).on('scroll',function () {
+
+                if($('html').scrollTop() < 1070){
+                    $dot.removeAttr('id');
+                    $dot[0].setAttribute('id','on');
+                }else if($('html').scrollTop()>1070 && $('html').scrollTop() < 2140){
+                    $dot.removeAttr('id');
+                    $dot[1].setAttribute('id','on');
+                }else if($('html').scrollTop()>2140 && $('html').scrollTop() < 3210){
+                    $dot.removeAttr('id');
+                    $dot[2].setAttribute('id','on');
+                }else if($('html').scrollTop()>3210){
+                    $dot.removeAttr('id');
+                    $dot[3].setAttribute('id','on');
+                }
+            })
+
+            //回到顶部
+        $('#top').on('click',function () {
+            var dis = $('body').scrollTop() + $('html').scrollTop();
+            var $page = $('body,html');
+            var time = 400;
+            var tpf = 20;
+            var nof = time/tpf;
+            var dpf = dis/nof;
+
+            var tId3 = setInterval(function () {
+                dis = dis - dpf;
+                if(dis < 1){
+                    clearInterval(tId3);
+                }
+                $page.scrollTop(dis);
+            },tpf)
+
+
+        })
+    })
+</script>
+</body>
+</html>

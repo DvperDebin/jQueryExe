@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>first exercise</title>
+    <script type="text/javascript" src="js/jquery-1.10.1.js"></script>
+    <style>
+    *{
+        margin:0px;
+        padding: 0px;
+    }
+    imgStored{
+            height: 4320px;
+        }
+        img{
+            width: 100%;
+            height: 1080px;
+            margin-bottom: -4px;
+        }
+        #dot{
+            width: 40px;
+            height: 150px;
+            position: fixed;
+            left: 1%;
+            top: 50%;
+            transform: translateY(-50%);
+            overflow: hidden;
+        }
+        .sdot{
+            width: 30px;
+            height: 30px;
+            border: 1px solid #0287CA;
+            border-radius: 50%;
+            margin-bottom: 5px;
+            cursor: pointer;
+        }
+        .container{
+            position: relative;
+
+        }
+        #on{
+            background: orange;
+            opacity: 0.3;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="imgStored">
+        <img src="img/1.jpg">
+        <img src="img/2.jpg">
+        <img src="img/3.jpg">
+        <img src="img/4.jpg">
+    </div>
+    <div id="dot">
+        <div class="sdot" id="on"></div>
+        <div class="sdot"></div>
+        <div class="sdot"></div>
+        <div class="sdot"></div>
+    </div>
+
+
+</div>
+
+<script type="text/javascript">
+  $(function () {
+
+      // 记录一下上一次点击的小圆点的index值
+        var preindex = 0;
+        //设置一个开关，取消二次点击，默认静止为false
+        var flag = false;
+        $('#dot > div').on('click',function () {
+            if(flag){   // 如果触发二次点击，就不执行
+                return;
+            }
+
+            // 得到当前点击的小圆点index值
+            var curindex = $(this).index();
+            if(curindex === preindex){
+                return;
+            }
+            //计算差值这一次点击和上一次点击的差值
+            var sub = curindex - preindex;
+            // 小圆点设置
+            var $sdot = $('#dot > div');
+            $sdot[preindex].removeAttribute('id');
+            $sdot[curindex].setAttribute('id','on');
+            // 更新preindex
+            preindex = curindex;
+            // 解决兼容问题
+            var $page = $('body, html');
+            // 移动距离，一张图片1080像素
+            var offset = 1080;
+            // 得到当前位置
+            var curOffset = $('body').scrollTop() + $('html').scrollTop();
+
+            // 定时器设定相关
+            var time = 600;
+            var tpf = 20;
+            var nof = time/tpf;  //30
+            var dpf = offset/nof; //36
+            // 打开开关，执行滑动动画
+            flag = true;
+            var tId = setInterval(function () {
+
+                if(sub > 0){  // 如果是往下点小圆点
+                    curOffset = curOffset + dpf;  // 往下就是加
+                    if(curOffset === offset * curindex){
+                        clearInterval(tId);
+                        flag = false;  //关闭开关
+                    }
+                }else if(sub < 0){    // 如果是往上点小圆点
+                    curOffset = curOffset - dpf;
+                    if(curOffset === offset * curindex){
+                        clearInterval(tId);
+                        flag = false;  // 关闭开关
+                    }
+                }
+                $page.scrollTop(curOffset);
+            },tpf)
+
+
+            //  一个bug  在图的中央位置点击的时候，会无限滑动，原因是得不到那个边界值所以会无限滑动
+
+        });
+
+
+  })
+
+
+</script>
+</body>
+</html>
+

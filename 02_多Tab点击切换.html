@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>02_多Tab点击切换</title>
+  <script src="jquery-1.10.1.js"></script>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+    }
+
+    #tab li {
+      float: left;
+      list-style: none;
+      width: 80px;
+      height: 40px;
+      line-height: 40px;
+      cursor: pointer;
+      text-align: center;
+    }
+
+    #container {
+      position: relative;
+    }
+
+    #content1, #content2, #content3 {
+      width: 300px;
+      height: 100px;
+      padding: 30px;
+      position: absolute;
+      top: 40px;
+      left: 0;
+    }
+
+    #tab1, #content1 {
+      background-color: #ffcc00;
+    }
+
+    #tab2, #content2 {
+      background-color: #ff00cc;
+    }
+
+    #tab3, #content3 {
+      background-color: #00ccff;
+    }
+    #tab li{
+      width: 120px;
+    }
+  </style>
+</head>
+<body>
+<h2>多Tab点击切换</h2>
+<ul id="tab">
+  <li id="tab1" value="1">10元套餐</li>
+  <li id="tab2" value="2">30元套餐</li>
+  <li id="tab3" value="3">50元包月</li>
+</ul>
+<div id="container">
+  <div id="content1">
+    10元套餐详情：<br/>&nbsp;每月套餐内拨打100分钟，超出部分2毛/分钟
+  </div>
+  <div id="content2" style="display: none">
+    30元套餐详情：<br/>&nbsp;每月套餐内拨打300分钟，超出部分1.5毛/分钟
+  </div>
+  <div id="content3" style="display: none">
+    50元包月详情：<br/>&nbsp;每月无限量随心打
+  </div>
+</div>
+<script>
+    $(function () {
+/*初级版      //  效果是当点击上面的三个tab的时候，div会跟着变
+        // 获取当前的所有tabs
+        var $tabs = $('ul > li');
+        // 获取所有的div，就是container中的div子元素
+        var $divs = $('#container > div');
+
+        // 绑定事件
+        $tabs.click(function () {
+            // 获取点击当前tab的下标
+            var $index = $(this).index();
+            //默认隐藏所有的div，当刚刚进入页面时，没有触发点击事件，第一个div是可以显示的
+            for(var i = 0; i < $divs.length; i++){  // 当点了第一个div时，所有的div都被隐藏了 但是下面
+                $divs[i].style.display = 'none';
+            }
+            // 相应的div设置为block
+            $divs[$index].style.display = 'block';  // 这里获得了index值了又把相对应的div显示出来了
+            console.log($index)
+        })*/
+
+
+  /* 进阶版
+     //  效果是当点击上面的三个tab的时候，div会跟着变
+        // 获取当前的所有tabs
+        var $tabs = $('ul > li');
+        // 获取所有的div，就是container中的div子元素
+        var $divs = $('#container > div');
+        // 来设定一个值，用于记录我们上一次点击的tab的下标
+        var $currIndex = 0;
+        // 绑定事件
+        $tabs.click(function () {
+            // 获取点击当前tab的下标
+            var $index = $(this).index();
+            //默认隐藏所有的div，当刚刚进入页面时，没有触发点击事件，第一个div是可以显示的
+            //for(var i = 0; i < $divs.length; i++){  // 当点了第一个div时，所有的div都被隐藏了 但是下面
+                $divs[$currIndex].style.display = 'none';  // 我们这里只设置上一个点击的为none
+            //}  //由于本身的html就设置了多余的div不显示，所以我们这里不需要全部的div都为none了
+            // 相应的div设置为block
+            $divs[$index].style.display = 'block';  // 这里获得了index值了又把相对应的div显示出来了
+            console.log($index)
+            // 最后要注意更新上次一点击的tab下标
+            $currIndex = $index; // 如果这里不设置，当我们点完一遍再点一次第一个tab会不成功，因为第三个蓝色div是block
+        })*/
+
+
+/*        //  效果是当点击上面的三个tab的时候，div会跟着变  - 最终版，加一个判断
+        // 获取当前的所有tabs
+        var $tabs = $('ul > li');
+        // 获取所有的div，就是container中的div子元素
+        var $divs = $('#container > div');
+        // 来设定一个值，用于记录我们上一次点击的tab的下标
+        var $currIndex = 0;
+        // 绑定事件
+        $tabs.click(function () {
+            // 获取点击当前tab的下标
+            var $index = $(this).index();
+            if($currIndex != $index){   // 就是点击后，隐藏的和显示的不为同一个的时候在进行下面操作否则其实已经操作过一次了、
+                // 比如在第二个tab了，再点击一次tab，这时currIndex和index值就相等了，没必要再次执行下面操作
+                //默认隐藏所有的div，当刚刚进入页面时，没有触发点击事件，第一个div是可以显示的
+                //for(var i = 0; i < $divs.length; i++){  // 当点了第一个div时，所有的div都被隐藏了 但是下面
+                $divs[$currIndex].style.display = 'none';  // 我们这里只设置上一个点击的为none
+                //}  //由于本身的html就设置了多余的div不显示，所以我们这里不需要全部的div都为none了
+                // 相应的div设置为block
+                $divs[$index].style.display = 'block';  // 这里获得了index值了又把相对应的div显示出来了
+                console.log($index)
+                // 最后要注意更新上次一点击的tab下标
+                $currIndex = $index; // 如果这里不设置，当我们点完一遍再点一次第一个tab会不成功，因为第三个蓝色div是block
+            }
+        })*/
+
+      // 获取所有的tabs和divs - 最终精简版
+        var $tabs = $('#tab > li');
+        var $divs = $('#container > div');
+      // 设置一个边路记录上一次点击的tab对应index的值
+        var $currIndex = 0;
+        // 给所有的tabs绑定点击事件
+        $tabs.click(function () {
+           //加一个判断，如果同时点击一个事件，那么就不多次触发代码
+            // 获得我们当前点击的tab的下标
+            var $index = $(this).index();  // 因为获得点击tab下标是在事件里面，所以要放在这里
+            if($currIndex != $index){
+                // 我们首先隐藏所有的divs, 现在只需要隐藏上一个就好
+                $divs[$currIndex].style.display = 'none';
+                // 把点击的当前下标对应的div设置为block
+                $divs[$index].style.display = 'block';
+                // 最后不要忘记更新记录上次点击tab的index值
+                $currIndex = $index;
+            }
+
+        })
+
+    })
+  </script>
+</body>
+</html>

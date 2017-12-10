@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>first exercise</title>
+    <script type="text/javascript" src="js/jquery-1.10.1.js"></script>
+    <style>
+        *{
+            margin:0px;
+            padding: 0px;
+            text-decoration: none;
+        }
+        .imgStored{
+            height: 4320px;
+            width: 1920px;
+            position: absolute;
+            top: -1080px;
+        }
+        img{
+            width: 100%;
+            height: 1080px;
+            margin-bottom:-4px;
+
+        }
+        #dot{
+            width: 40px;
+            height: 150px;
+            position: fixed;
+            left: 1%;
+            top: 50%;
+            transform: translateY(-50%);
+            overflow: hidden;
+        }
+        .sdot{
+            width: 30px;
+            height: 30px;
+            border: 1px solid #0287CA;
+            border-radius: 50%;
+            margin-bottom: 5px;
+            cursor: pointer;
+        }
+        .container{
+            position: relative;
+            overflow: hidden;
+            width: 100%;
+            height: 1080px;
+
+        }
+        #on{
+            background: orange;
+            opacity: 0.3;
+        }
+        .arrow:hover {
+            background-color: RGBA(0, 0, 0, 0.7);
+        }
+        #prev {
+            cursor: pointer;
+            display: none;
+            line-height: 39px;
+            text-align: center;
+            font-size: 36px;
+            font-weight: bold;
+            width: 40px;
+            height: 40px;
+            position: absolute;
+            z-index: 2;
+            background-color: RGBA(0, 0, 0, 0.3);
+            left: 50%;
+            color: #fff;
+        }
+
+        /*下一个切换图标的右外边距*/
+        #next {
+            right: 20px;
+            cursor: pointer;
+            display: none;
+            line-height: 39px;
+            text-align: center;
+            font-size: 36px;
+            font-weight: bold;
+            width: 40px;
+            height: 40px;
+            position: absolute;
+            z-index: 2;
+            background-color: RGBA(0, 0, 0, 0.3);
+            left: 50%;
+            top:90%;
+            color: #fff;
+        }
+        /*鼠标移到整个div区域时*/
+        .container:hover #next,#prev {
+            display: block;/*显示*/
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="imgStored">
+        <img src="img/4.jpg">
+        <img src="img/1.jpg">
+        <img src="img/2.jpg">
+        <img src="img/3.jpg">
+        <img src="img/4.jpg">
+        <img src="img/1.jpg">
+    </div>
+    <div id="dot">
+        <div class="sdot" id="on"></div>
+        <div class="sdot"></div>
+        <div class="sdot"></div>
+        <div class="sdot"></div>
+    </div>
+    <a href="javascript:;" id="prev" class="arrow">^</a>
+    <a href="javascript:;" id="next" class="arrow">v</a>
+</div>
+
+<script type="text/javascript">
+    $(function () {
+
+        $('#prev').on('click',function () {
+
+            nextImg(false);
+        });
+        
+        $('#next').on('click',function () {
+
+            nextImg(true);
+        });
+
+        var tId = setInterval(function () {
+            nextImg(true);
+        },3000);
+
+        $('.container').on('mouseenter',function () {
+            clearInterval(tId);
+        }).on('mouseleave',function () {
+            tId = setInterval(function () {
+                nextImg(true);
+            },3000)
+        });
+
+        $('#dot > div').on('click',function () {
+            var index = $(this).index();
+            nextImg(index);
+        })
+
+        var flag = false;
+        function nextImg(next) {
+            if(flag){
+                return;
+            }
+            var height = 1080;
+
+            if(typeof next === 'boolean'){
+                var offset = next? -height:height;
+            }else{
+                var offset = -(next-preIndex) * height;
+                console.log(offset)
+            }
+
+            var top = $('.imgStored').position().top;
+
+            var time = 400;
+            var tpf = 20;
+            var nof = time/tpf;
+            var dpf = offset/nof;
+
+            var tarTop = top + offset;
+            flag = true;
+            var tId = setInterval(function () {
+
+                top = top + dpf;
+
+                if(top === tarTop){
+                    clearInterval(tId);
+                    flag = false;
+                    if(top === -5400){
+                        top = -1080
+                    }else if(top === 0){
+                        top = -4320;
+                    }
+                }
+
+                $('.imgStored').css('top',top);
+            },tpf);
+
+        /*   top = top + offset;
+
+            $('.imgStored').css('top',top)*/
+
+            dot(next);
+
+        }
+
+
+        var preIndex = 0;
+        var $sdot = $('#dot > div');
+        function dot(next) {
+            if(typeof next === 'boolean'){
+                var tarIndex = next? preIndex + 1:preIndex-1;
+            }else{
+                var tarIndex = next;
+            }
+
+
+            if(tarIndex < 0){
+                tarIndex = 3;
+            }else if(tarIndex > 3){
+                tarIndex = 0;
+            }
+
+            $sdot[preIndex].removeAttribute('id');
+            $sdot[tarIndex].setAttribute('id','on');
+
+            preIndex = tarIndex;
+        }
+        
+        
+    })
+</script>
+</body>
+</html>
